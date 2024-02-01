@@ -36,7 +36,7 @@ class WeatherRepositoryImpl(
 
         try {
 
-            val apiKey = BuildConfig.API_KEY
+            val apiKey = BuildConfig.WEATHER_API_KEY
 
             val response = withContext(Dispatchers.IO) {
                 try {

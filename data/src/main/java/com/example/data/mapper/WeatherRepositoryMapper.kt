@@ -12,7 +12,6 @@ class WeatherRepositoryMapperImpl: WeatherRepositoryMapper {
     override fun toWeatherModel(response: WeatherResponse): WeatherModel {
         val currentWeather = toCurrentWeather(response)
         val dailyWeather = toDailyWeather(response)
-        val hourlyWeather = toHourlyWeather(response)
 
         return WeatherModel(currentWeather = currentWeather, dailyWeather = dailyWeather)
     }
@@ -45,17 +44,6 @@ class WeatherRepositoryMapperImpl: WeatherRepositoryMapper {
                         avgTemp = item.avgTemp.toInt()
                     )
                 }
-            )
-        }
-    }
-
-
-    private fun toHourlyWeather(response: WeatherResponse): List<WeatherModel.HourlyWeather> {
-        return response.forecast.forecastday[0].hourWeather.map { item ->
-            WeatherModel.HourlyWeather(
-                time = item.time,
-                icon = item.condition.icon,
-                avgTemp = item.avgTemp.toInt()
             )
         }
     }

@@ -29,10 +29,10 @@ android {
                 "proguard-rules.pro"
             )
 
-            buildConfigField("String", "API_KEY", "\"weatherApiKey\"")
+            buildConfigField("String", "WEATHER_API_KEY", "\"${project.findProperty("weatherApiKey")?.toString()}\"")
         }
         debug {
-            buildConfigField("String", "API_KEY", "\"weatherApiKey\"")
+            buildConfigField("String", "WEATHER_API_KEY", "\"${project.findProperty("weatherApiKey")?.toString()}\"")
         }
     }
     compileOptions {
