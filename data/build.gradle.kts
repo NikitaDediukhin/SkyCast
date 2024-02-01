@@ -17,6 +17,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+
     }
 
     buildTypes {
@@ -26,10 +28,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "WEATHER_API_KEY", project.findProperty("weatherApiKey").toString())
+
+            buildConfigField("String", "API_KEY", "\"weatherApiKey\"")
         }
         debug {
-            buildConfigField("String", "WEATHER_API_KEY", project.findProperty("weatherApiKey").toString())
+            buildConfigField("String", "API_KEY", "\"weatherApiKey\"")
         }
     }
     compileOptions {
