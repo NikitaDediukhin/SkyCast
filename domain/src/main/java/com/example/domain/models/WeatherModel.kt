@@ -1,4 +1,4 @@
-package com.example.skycast.models
+package com.example.domain.models
 
 data class WeatherModel(
     val currentWeather: CurrentWeather,
