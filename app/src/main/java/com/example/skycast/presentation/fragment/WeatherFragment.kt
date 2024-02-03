@@ -1,19 +1,13 @@
 package com.example.skycast.presentation.fragment
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ScrollView
 import android.widget.TextView
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -40,15 +34,12 @@ class WeatherFragment: Fragment() {
     private lateinit var rvHourWeather: RecyclerView
     private lateinit var rvDayWeather: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var nestedScrollView: NestedScrollView
     private lateinit var button: Button
     private lateinit var editText: EditText
     private lateinit var tvCity: TextView
     private lateinit var tvTemp: TextView
     private lateinit var tvCondition: TextView
     private lateinit var ivIcon: ImageView
-
-    private lateinit var animator: ValueAnimator
 
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
@@ -103,9 +94,7 @@ class WeatherFragment: Fragment() {
         }
 
         swipeRefreshLayout.setOnRefreshListener {
-
             val cityName: String = weatherViewModel.cityNameLive.value.toString()
-            Log.w("AAA", "city: ${cityName}")
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
                     weatherViewModel.updateCityName(cityName)
@@ -190,8 +179,6 @@ class WeatherFragment: Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         button = view.findViewById(R.id.button)
         editText = view.findViewById(R.id.editText)
-        nestedScrollView = view.findViewById(R.id.sv_container)
-
         tvCity = view.findViewById(R.id.tv_city)
         tvTemp = view.findViewById(R.id.tv_temp)
         tvCondition = view.findViewById(R.id.tv_condition)
