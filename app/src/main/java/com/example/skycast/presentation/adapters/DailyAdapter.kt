@@ -42,7 +42,6 @@ class DailyAdapter: RecyclerView.Adapter<DailyAdapter.DailyViewHolder>() {
         }
         holder.itemView.setOnClickListener {
             onDayClickListener?.invoke(currentDay!!)
-            Log.e("AAAAAAA", "click onDayClickListener")
         }
     }
 

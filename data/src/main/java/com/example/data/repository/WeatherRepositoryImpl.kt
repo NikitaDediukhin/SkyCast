@@ -48,8 +48,6 @@ class WeatherRepositoryImpl(
                 }
             }
 
-            Log.w("Responseff", response.toString())
-
             if (response != null) {
                 if (response.isSuccessful) {
                     weatherResponse = response.body()
@@ -57,16 +55,13 @@ class WeatherRepositoryImpl(
                         weatherModel = weatherRepositoryMapper.toWeatherModel(weatherResponse)
                         return weatherModel
                     } else {
-                        // Обработка случая, когда ответ API пуст или не содержит прогноза
                         Log.e("ErrorRepository", "Empty response or missing forecast data, response = ${response.body()}")
                     }
                 } else {
-                    // Обработка случая, когда запрос к API не успешен
                     Log.e("ErrorRepository", "Unsuccessful API response: ${response.code()}")
                 }
             }
         } catch (e: Exception) {
-            // Обработка других исключений
             Log.e("ErrorRepository", e.toString())
         }
         return null
