@@ -24,8 +24,8 @@ class WeatherViewModel(
     private val selectedWeatherDayMutable = MutableLiveData<WeatherModel.DailyWeather?>()
     val selectedWeatherDayLive: LiveData<WeatherModel.DailyWeather?> = selectedWeatherDayMutable
 
-
     private val cityNameMutable = MutableLiveData<String>()
+    val cityNameLive: LiveData<String> = cityNameMutable
 
     fun updateCityName(city: String) {
         cityNameMutable.value = city

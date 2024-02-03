@@ -1,18 +1,25 @@
 package com.example.skycast.presentation.fragment
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.domain.models.WeatherModel
 import com.example.skycast.R
@@ -32,12 +39,16 @@ class WeatherFragment: Fragment() {
     private lateinit var dayAdapter: DailyAdapter
     private lateinit var rvHourWeather: RecyclerView
     private lateinit var rvDayWeather: RecyclerView
-    private var button: Button? = null
-    private var editText: EditText? = null
-    private var tvCity: TextView? = null
-    private var tvTemp: TextView? = null
-    private var tvCondition: TextView? = null
-    private var ivIcon: ImageView? = null
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var nestedScrollView: NestedScrollView
+    private lateinit var button: Button
+    private lateinit var editText: EditText
+    private lateinit var tvCity: TextView
+    private lateinit var tvTemp: TextView
+    private lateinit var tvCondition: TextView
+    private lateinit var ivIcon: ImageView
+
+    private lateinit var animator: ValueAnimator
 
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
@@ -67,10 +78,11 @@ class WeatherFragment: Fragment() {
 
         init(view)
 
-        button?.setOnClickListener {
+        button.setOnClickListener {
+            val cityName: String = editText.text.toString()
+
             viewLifecycleOwner.lifecycleScope.launch {
                 try {
-                    val cityName: String = editText?.text.toString()
                     weatherViewModel.updateCityName(cityName)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -89,20 +101,35 @@ class WeatherFragment: Fragment() {
         weatherViewModel.selectedWeatherDayLive.observe(viewLifecycleOwner) { selectedDay ->
             updateSelectedDay(selectedDay)
         }
+
+        swipeRefreshLayout.setOnRefreshListener {
+
+            val cityName: String = weatherViewModel.cityNameLive.value.toString()
+            Log.w("AAA", "city: ${cityName}")
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    weatherViewModel.updateCityName(cityName)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } finally {
+                    swipeRefreshLayout.isRefreshing = false
+                }
+            }
+        }
     }
 
     private fun showWeatherData(weatherModel: WeatherModel?) {
 
         requireActivity().runOnUiThread {
-            ivIcon?.let {
+            ivIcon.let {
                 Glide.with(this)
                     .load("https:${weatherModel?.currentWeather?.icon}")
                     .into(it)
             }
 
-            tvCity?.text = context?.getString(R.string.current_weather_city, weatherModel?.currentWeather?.city)
-            tvTemp?.text = context?.getString(R.string.current_weather_temp, weatherModel?.currentWeather?.avgTemp)
-            tvCondition?.text = context?.getString(
+            tvCity.text = context?.getString(R.string.current_weather_city, weatherModel?.currentWeather?.city)
+            tvTemp.text = context?.getString(R.string.current_weather_temp, weatherModel?.currentWeather?.avgTemp)
+            tvCondition.text = context?.getString(
                 R.string.current_weather_condition,
                 weatherModel?.currentWeather?.condition,
                 weatherModel?.currentWeather?.maxTemp,
@@ -132,15 +159,14 @@ class WeatherFragment: Fragment() {
     private fun updateSelectedDay(selectedDay: WeatherModel.DailyWeather?) {
 
         requireActivity().runOnUiThread {
-            ivIcon?.let {
+            ivIcon.let {
                 Glide.with(this)
                     .load("https:${selectedDay?.icon}")
                     .into(it)
             }
 
-            //tvCity?.text = context?.getString(R.string.current_weather_city, weatherModel?.currentWeather?.city)
-            tvTemp?.text = context?.getString(R.string.current_weather_temp, selectedDay?.avgTemp)
-            tvCondition?.text = context?.getString(
+            tvTemp.text = context?.getString(R.string.current_weather_temp, selectedDay?.avgTemp)
+            tvCondition.text = context?.getString(
                 R.string.current_weather_condition,
                 selectedDay?.condition,
                 selectedDay?.maxTemp,
@@ -161,8 +187,10 @@ class WeatherFragment: Fragment() {
     }
 
     private fun init(view: View) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         button = view.findViewById(R.id.button)
         editText = view.findViewById(R.id.editText)
+        nestedScrollView = view.findViewById(R.id.sv_container)
 
         tvCity = view.findViewById(R.id.tv_city)
         tvTemp = view.findViewById(R.id.tv_temp)
