@@ -81,6 +81,18 @@ class WeatherFragment: Fragment() {
             }
         }
 
+        swipeRefreshLayout.setOnRefreshListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    weatherViewModel.refreshWeatherData()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } finally {
+                    swipeRefreshLayout.isRefreshing = false
+                }
+            }
+        }
+
         dayAdapter.setClickListener { selectedDay ->
             weatherViewModel.updateSelectedDay(selectedDay)
         }
@@ -91,19 +103,6 @@ class WeatherFragment: Fragment() {
 
         weatherViewModel.selectedWeatherDayLive.observe(viewLifecycleOwner) { selectedDay ->
             updateSelectedDay(selectedDay)
-        }
-
-        swipeRefreshLayout.setOnRefreshListener {
-            val cityName: String = weatherViewModel.cityNameLive.value.toString()
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    weatherViewModel.updateCityName(cityName)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                } finally {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            }
         }
     }
 
@@ -136,11 +135,6 @@ class WeatherFragment: Fragment() {
             hourAdapter.setHourlyData(weatherModel?.dailyWeather?.get(0)?.hourlyWeather!!)
             dayAdapter.setDailyData(weatherModel.dailyWeather)
 
-            val selectedDay = weatherViewModel.selectedWeatherDayLive.value
-            if (selectedDay != null) {
-                hourAdapter.setHourlyData(selectedDay.hourlyWeather)
-            }
-
         }
 
     }
@@ -160,7 +154,6 @@ class WeatherFragment: Fragment() {
                 selectedDay?.condition,
                 selectedDay?.maxTemp,
                 selectedDay?.minTemp,
-                // Поправленный код для парсинга даты
                 LocalDate.parse(
                     selectedDay?.day,
                     DateTimeFormatter.ofPattern("yyyy-MM-dd")
