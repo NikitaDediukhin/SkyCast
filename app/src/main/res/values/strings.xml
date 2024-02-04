@@ -3,12 +3,12 @@
 
     <string name="current_weather_city">%1$s</string>
     <string name="current_weather_temp">%1$d°</string>
-    <string name="current_weather_condition">%1$s %2$d° / %3$d°\n%4$s</string>
+    <string name="current_weather_condition">%1$s \n%4$s %2$d° / %3$d°</string>
 
     <string name="item_weather_temp">%1$d°</string>
     <string name="null_city">Волгоград</string>
     <string name="degree_null">9°</string>
-    <string name="current_weather_null">Облачно -9° / -10°C\nпт, 19:00</string>
+    <string name="current_weather_null">Облачно \nпт, 19:00 -9° / -10°C</string>
     <string name="button_text">Погода</string>
     <string name="edittext_hint">city</string>
     <string name="weather_icon">"Weather Icon from API "</string>
