@@ -1,13 +1,20 @@
 package com.example.skycast.presentation.fragment
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +26,10 @@ import com.example.domain.models.WeatherModel
 import com.example.skycast.R
 import com.example.skycast.presentation.adapters.DailyAdapter
 import com.example.skycast.presentation.adapters.HourlyAdapter
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDate
@@ -34,12 +45,13 @@ class WeatherFragment: Fragment() {
     private lateinit var rvHourWeather: RecyclerView
     private lateinit var rvDayWeather: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var button: Button
-    private lateinit var editText: EditText
     private lateinit var tvCity: TextView
     private lateinit var tvTemp: TextView
     private lateinit var tvCondition: TextView
     private lateinit var ivIcon: ImageView
+
+    private lateinit var pLauncher: ActivityResultLauncher<String>
+    private lateinit var fLocationClient: FusedLocationProviderClient
 
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
@@ -48,62 +60,30 @@ class WeatherFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val view = inflater.inflate(R.layout.weather_fragment, container, false)
-        rvHourWeather = view.findViewById(R.id.rv_hour)
-        rvDayWeather = view.findViewById(R.id.rv_day)
-        hourAdapter = HourlyAdapter()
-        dayAdapter = DailyAdapter()
-
-        rvHourWeather.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        rvHourWeather.adapter = hourAdapter
-
-        rvDayWeather.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        rvDayWeather.adapter = dayAdapter
-
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkPermission()
         init(view)
-
-        button.setOnClickListener {
-            val cityName: String = editText.text.toString()
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    weatherViewModel.updateCityName(cityName)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        swipeRefreshLayout.setOnRefreshListener {
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    weatherViewModel.refreshWeatherData()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                } finally {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            }
-        }
-
-        dayAdapter.setClickListener { selectedDay ->
-            weatherViewModel.updateSelectedDay(selectedDay)
-        }
 
         weatherViewModel.weatherDataLive.observe(viewLifecycleOwner) { weatherModel ->
             showWeatherData(weatherModel)
         }
-
         weatherViewModel.selectedWeatherDayLive.observe(viewLifecycleOwner) { selectedDay ->
             updateSelectedDay(selectedDay)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkLocation()
     }
 
     private fun showWeatherData(weatherModel: WeatherModel?) {
@@ -168,13 +148,91 @@ class WeatherFragment: Fragment() {
 
     }
 
+    private fun checkPermission() {
+    pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (!isGranted) {
+            Toast.makeText(context, "Разрешение не получено", Toast.LENGTH_LONG).show()
+        }
+    }
+        val permission = Manifest.permission.ACCESS_FINE_LOCATION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isPermissionGranted(permission)) {
+            pLauncher.launch(permission)
+        }
+    }
+
+    private fun getLocation() {
+        if(!isLocationEnabled()){
+            Toast.makeText(context, "Местоположение выключено", Toast.LENGTH_LONG).show()
+            return
+        }
+        val ct = CancellationTokenSource()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        fLocationClient
+            .getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, ct.token)
+            .addOnCompleteListener {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        weatherViewModel.updateCityName("${it.result.latitude},${it.result.longitude}")
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+        }
+    }
+
+    private fun checkLocation() {
+        if(isLocationEnabled()) {
+            getLocation()
+        } else {
+            DialogManager.locationSettingsDialog(requireContext(), object : DialogManager.Listener{
+                override fun onClick() {
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+            })
+        }
+    }
+
     private fun init(view: View) {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        button = view.findViewById(R.id.button)
-        editText = view.findViewById(R.id.editText)
         tvCity = view.findViewById(R.id.tv_city)
         tvTemp = view.findViewById(R.id.tv_temp)
         tvCondition = view.findViewById(R.id.tv_condition)
         ivIcon = view.findViewById(R.id.iv_icon)
+
+        rvHourWeather = view.findViewById(R.id.rv_hour)
+        rvDayWeather = view.findViewById(R.id.rv_day)
+        hourAdapter = HourlyAdapter()
+        dayAdapter = DailyAdapter()
+
+        rvHourWeather.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rvHourWeather.adapter = hourAdapter
+
+        rvDayWeather.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rvDayWeather.adapter = dayAdapter
+
+        fLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        swipeRefreshLayout.setOnRefreshListener {
+            try {
+                checkLocation()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } finally {
+                swipeRefreshLayout.isRefreshing = false
+            }
+        }
+        dayAdapter.setClickListener { selectedDay ->
+            weatherViewModel.updateSelectedDay(selectedDay)
+        }
     }
 }
