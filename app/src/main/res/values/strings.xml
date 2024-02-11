@@ -13,5 +13,12 @@
     <string name="edittext_hint">city</string>
     <string name="weather_icon">"Weather Icon from API "</string>
     <string name="get_weather_by_city">get weather by city</string>
+    <string name="btn_cancel">Отмена</string>
+    <string name="btn_location_enable">Включить</string>
+    <string name="btn_submit">OK</string>
+    <string name="title_city_dialog">Погода в городе</string>
+    <string name="edittext_city_dialog">Введите название города</string>
+    <string name="bodytext_location_dialog">Для точного прогноза погоды требуется включить геолокацию. Хотите включить её сейчас?</string>
+    <string name="title_location_dialog">Геолокация выключена</string>
 
 </resources>
