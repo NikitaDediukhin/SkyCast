@@ -9,6 +9,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -49,6 +51,7 @@ class WeatherFragment: Fragment() {
     private lateinit var tvTemp: TextView
     private lateinit var tvCondition: TextView
     private lateinit var ivIcon: ImageView
+    private lateinit var btnCity: ImageButton
 
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var fLocationClient: FusedLocationProviderClient
@@ -60,8 +63,7 @@ class WeatherFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.weather_fragment, container, false)
-        return view
+        return inflater.inflate(R.layout.weather_fragment, container, false)
     }
 
     override fun onViewCreated(
@@ -161,10 +163,6 @@ class WeatherFragment: Fragment() {
     }
 
     private fun getLocation() {
-        if(!isLocationEnabled()){
-            Toast.makeText(context, "Местоположение выключено", Toast.LENGTH_LONG).show()
-            return
-        }
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -209,6 +207,9 @@ class WeatherFragment: Fragment() {
         tvCondition = view.findViewById(R.id.tv_condition)
         ivIcon = view.findViewById(R.id.iv_icon)
 
+        btnCity = view.findViewById(R.id.btn_city)
+        val animation = AnimationUtils.loadAnimation(view.context, R.anim.button_city_anim)
+
         rvHourWeather = view.findViewById(R.id.rv_hour)
         rvDayWeather = view.findViewById(R.id.rv_day)
         hourAdapter = HourlyAdapter()
@@ -233,6 +234,9 @@ class WeatherFragment: Fragment() {
         }
         dayAdapter.setClickListener { selectedDay ->
             weatherViewModel.updateSelectedDay(selectedDay)
+        }
+        btnCity.setOnClickListener {
+            btnCity.startAnimation(animation)
         }
     }
 }

@@ -23,15 +23,28 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_begin="16dp" />
 
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_city"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:padding="14dp"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/ic_action_search"
+                android:scaleType="fitCenter"
+                android:background="@drawable/button_background_gradient"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                android:contentDescription="@string/get_weather_by_city" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_current"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="40dp"
                 app:cardCornerRadius="16dp"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_city"
                 app:layout_constraintDimensionRatio="358:244">
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -71,9 +84,9 @@
 
                             <TextView
                                 android:id="@+id/tv_temp"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
                                 android:fontFamily="@font/inter_font"
                                 android:includeFontPadding="false"
                                 android:text="@string/degree_null"
@@ -93,7 +106,6 @@
                                 android:layout_width="150dp"
                                 android:layout_height="150dp"
                                 android:layout_alignParentEnd="true"
-                                android:layout_marginEnd="10dp"
                                 android:contentDescription="@string/weather_icon"
                                 tools:ignore="ImageContrastCheck" />
                         </RelativeLayout>
@@ -142,6 +154,7 @@
                 android:orientation="horizontal"
                 android:background="@drawable/gradient_background_widget"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
                 android:paddingVertical="10dp"
