@@ -8,6 +8,7 @@ import retrofit2.http.Query
 const val ALERTS = "no"
 const val AQI = "no"
 const val DAYS = 7
+const val LANGUAGE = "ru"
 
 interface WeatherApiService {
 
@@ -17,6 +18,7 @@ interface WeatherApiService {
         @Query("q") city: String,
         @Query("days") days: Int = DAYS,
         @Query("aqi") aqi: String = AQI,
-        @Query("alerts") alerts: String = ALERTS
+        @Query("alerts") alerts: String = ALERTS,
+        @Query("lang") language: String = LANGUAGE
     ): Response<WeatherResponse>
 }

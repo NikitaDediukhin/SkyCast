@@ -3,7 +3,6 @@ package com.example.skycast.presentation.fragment
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -157,7 +156,7 @@ class WeatherFragment: Fragment() {
         }
     }
         val permission = Manifest.permission.ACCESS_FINE_LOCATION
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isPermissionGranted(permission)) {
+        if (!isPermissionGranted(permission)) {
             pLauncher.launch(permission)
         }
     }
@@ -193,7 +192,7 @@ class WeatherFragment: Fragment() {
             getLocation()
         } else {
             DialogManager.locationSettingsDialog(requireContext(), object : DialogManager.Listener{
-                override fun onClick() {
+                override fun onClick(name: String?) {
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
             })
@@ -237,6 +236,18 @@ class WeatherFragment: Fragment() {
         }
         btnCity.setOnClickListener {
             btnCity.startAnimation(animation)
+            DialogManager.searchByCityNameDialog(view.context, object : DialogManager.Listener{
+                override fun onClick(name: String?) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        try {
+                            name?.let {cityName -> weatherViewModel.updateCityName(cityName)}
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+
+            })
         }
     }
 }
