@@ -12,5 +12,6 @@
     <string name="button_text">Погода</string>
     <string name="edittext_hint">city</string>
     <string name="weather_icon">"Weather Icon from API "</string>
+    <string name="get_weather_by_city">get weather by city</string>
 
 </resources>

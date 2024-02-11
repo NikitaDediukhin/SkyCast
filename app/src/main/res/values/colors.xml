@@ -12,5 +12,8 @@
     <color name="widget_color">#9E9E9E</color>
     <color name="text_color">#CCFFFFFF</color>
 
-    <color name="background_color_blue">#BCE6FF</color>
+    <color name="background_color_lightBlue">#BCE6FF</color>
+    <color name="background_color_blue">#2C82B5</color>
+    <color name="background_color_alphaBlue">#CC2C82B5</color>
+    <color name="background_color_darkBlue">#015C91</color>
 </resources>
