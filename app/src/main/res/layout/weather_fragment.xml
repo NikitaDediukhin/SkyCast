@@ -6,174 +6,191 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/sv_container"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@drawable/gradient_background_layout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_city"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:padding="14dp"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/ic_action_search"
+            android:scaleType="fitCenter"
+            android:background="@drawable/button_background_gradient"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            android:contentDescription="@string/get_weather_by_city" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:foregroundGravity="fill">
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_start"
-                android:layout_width="wrap_content"
+            <include layout="@layout/weather_fragment_placeholder"/>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <ScrollView
+            android:id="@+id/sv_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="16dp" />
+                android:paddingBottom="50dp">
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_city"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:padding="14dp"
-                android:layout_marginTop="40dp"
-                android:src="@drawable/ic_action_search"
-                android:scaleType="fitCenter"
-                android:background="@drawable/button_background_gradient"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="@id/guideline_start"
-                android:contentDescription="@string/get_weather_by_city" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_current"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="40dp"
-                app:cardCornerRadius="16dp"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/btn_city"
-                app:layout_constraintDimensionRatio="358:244">
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_background_widget"
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:paddingVertical="18dp">
+                    app:layout_constraintGuide_end="395dp" />
 
-                    <LinearLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_current"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="40dp"
+                    app:cardCornerRadius="16dp"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintDimensionRatio="358:244">
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:baselineAligned="false"
-                        android:layout_alignParentTop="true">
+                        android:layout_height="match_parent"
+                        android:background="@drawable/gradient_background_widget"
+                        android:orientation="vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingVertical="18dp">
+
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_city"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/null_city"
-                                android:textFontWeight="400"
-                                android:fontFamily="@font/inter_font"
-                                android:includeFontPadding="false"
-                                android:textColor="@color/text_color"
-                                android:textSize="32sp"
-                                android:autoSizeTextType="uniform"
-                                android:maxLines="1"
-                                android:ellipsize="end"
-                                tools:targetApi="p" />
-
-                            <TextView
-                                android:id="@+id/tv_temp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:fontFamily="@font/inter_font"
-                                android:includeFontPadding="false"
-                                android:text="@string/degree_null"
-                                android:textColor="@color/text_color"
-                                android:textFontWeight="400"
-                                android:textSize="64sp"
-                                tools:targetApi="p" />
-
-                        </LinearLayout>
-                        <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:id="@+id/iv_icon"
-                                android:layout_width="150dp"
-                                android:layout_height="150dp"
-                                android:layout_alignParentEnd="true"
-                                android:contentDescription="@string/weather_icon"
-                                tools:ignore="ImageContrastCheck" />
-                        </RelativeLayout>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true">
-                        <TextView
-                            android:id="@+id/tv_condition"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/current_weather_null"
-                            android:textFontWeight="400"
-                            android:fontFamily="@font/inter_font"
-                            android:textColor="@color/text_color"
-                            android:textSize="16sp"
-                            android:layout_gravity="bottom"
-                            tools:targetApi="p" />
-                    </LinearLayout>
+                            android:orientation="horizontal"
+                            android:baselineAligned="false"
+                            android:layout_alignParentTop="true">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:id="@+id/tv_city"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/null_city"
+                                    android:textFontWeight="400"
+                                    android:fontFamily="@font/inter_font"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/text_color"
+                                    android:textSize="32sp"
+                                    android:autoSizeTextType="uniform"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    tools:targetApi="p" />
+
+                                <TextView
+                                    android:id="@+id/tv_temp"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:fontFamily="@font/inter_font"
+                                    android:includeFontPadding="false"
+                                    android:text="@string/degree_null"
+                                    android:textColor="@color/text_color"
+                                    android:textFontWeight="400"
+                                    android:textSize="64sp"
+                                    tools:targetApi="p" />
+
+                            </LinearLayout>
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:id="@+id/iv_icon"
+                                    android:layout_width="150dp"
+                                    android:layout_height="150dp"
+                                    android:layout_alignParentEnd="true"
+                                    android:contentDescription="@string/weather_icon"
+                                    tools:ignore="ImageContrastCheck" />
+                            </RelativeLayout>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true">
+                            <TextView
+                                android:id="@+id/tv_condition"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/current_weather_null"
+                                android:textFontWeight="400"
+                                android:fontFamily="@font/inter_font"
+                                android:textColor="@color/text_color"
+                                android:textSize="16sp"
+                                android:layout_gravity="bottom"
+                                tools:targetApi="p" />
+                        </LinearLayout>
 
 
-                </RelativeLayout>
+                    </RelativeLayout>
 
-            </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_hour"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:background="@drawable/gradient_background_widget"
-                android:layout_marginTop="24dp"
-                android:paddingStart="0dp"
-                android:paddingEnd="0dp"
-                android:paddingVertical="9dp"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/cv_current"
-                app:layout_constraintDimensionRatio="358:93"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_hour"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/gradient_background_widget"
+                    android:layout_marginTop="24dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toBottomOf="@id/cv_current"
+                    app:layout_constraintDimensionRatio="358:93"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_day"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:background="@drawable/gradient_background_widget"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="50dp"
-                android:paddingStart="0dp"
-                android:paddingEnd="0dp"
-                android:paddingVertical="10dp"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rv_hour"
-                app:layout_constraintDimensionRatio="358:145">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_day"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/gradient_background_widget"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="50dp"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toBottomOf="@id/rv_hour"
+                    app:layout_constraintDimensionRatio="358:133">
 
-            </androidx.recyclerview.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_end="16dp" />
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_end="16dp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+        </ScrollView>
+
+    </LinearLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
