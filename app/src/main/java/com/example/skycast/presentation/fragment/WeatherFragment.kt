@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +29,7 @@ import com.example.domain.models.WeatherModel
 import com.example.skycast.R
 import com.example.skycast.presentation.adapters.DailyAdapter
 import com.example.skycast.presentation.adapters.HourlyAdapter
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -55,6 +58,10 @@ class WeatherFragment: Fragment() {
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var fLocationClient: FusedLocationProviderClient
 
+    private lateinit var shimmerLayout: ShimmerFrameLayout
+
+    private var locationRequested = false
+
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -62,7 +69,10 @@ class WeatherFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.weather_fragment, container, false)
+        val view = inflater.inflate(R.layout.weather_fragment, container, false)
+        shimmerLayout = view.findViewById(R.id.shimmerLayout)
+        shimmerLayout.startShimmer()
+        return view
     }
 
     override fun onViewCreated(
@@ -80,14 +90,21 @@ class WeatherFragment: Fragment() {
         weatherViewModel.selectedWeatherDayLive.observe(viewLifecycleOwner) { selectedDay ->
             updateSelectedDay(selectedDay)
         }
+
     }
 
     override fun onResume() {
         super.onResume()
-        checkLocation()
+        if (!locationRequested){
+            checkLocation()
+            locationRequested = true
+        }
     }
 
     private fun showWeatherData(weatherModel: WeatherModel?) {
+
+        shimmerLayout.stopShimmer()
+        shimmerLayout.visibility = View.GONE
 
         requireActivity().runOnUiThread {
             ivIcon.let {
@@ -187,6 +204,7 @@ class WeatherFragment: Fragment() {
         }
     }
 
+
     private fun checkLocation() {
         if(isLocationEnabled()) {
             getLocation()
@@ -214,10 +232,16 @@ class WeatherFragment: Fragment() {
         hourAdapter = HourlyAdapter()
         dayAdapter = DailyAdapter()
 
-        rvHourWeather.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        val hourLayoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        val dayLayoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+
+        hourLayoutManager.stackFromEnd = true
+        dayLayoutManager.stackFromEnd = true
+
+        rvHourWeather.layoutManager = hourLayoutManager
         rvHourWeather.adapter = hourAdapter
 
-        rvDayWeather.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
+        rvDayWeather.layoutManager = dayLayoutManager
         rvDayWeather.adapter = dayAdapter
 
         fLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
@@ -238,11 +262,14 @@ class WeatherFragment: Fragment() {
             btnCity.startAnimation(animation)
             DialogManager.searchByCityNameDialog(view.context, object : DialogManager.Listener{
                 override fun onClick(name: String?) {
+
                     viewLifecycleOwner.lifecycleScope.launch {
                         try {
                             name?.let {cityName -> weatherViewModel.updateCityName(cityName)}
                         } catch (e: IOException) {
                             e.printStackTrace()
+                        } finally {
+
                         }
                     }
                 }
