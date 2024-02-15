@@ -35,7 +35,6 @@ class WeatherRepositoryImpl(
         val weatherResponse: WeatherResponse?
 
         try {
-
             val apiKey = BuildConfig.WEATHER_API_KEY
 
             val response = withContext(Dispatchers.IO) {
@@ -47,6 +46,8 @@ class WeatherRepositoryImpl(
                     null
                 }
             }
+
+            Log.w("query", response?.raw()?.request().toString())
 
             if (response != null) {
                 if (response.isSuccessful) {

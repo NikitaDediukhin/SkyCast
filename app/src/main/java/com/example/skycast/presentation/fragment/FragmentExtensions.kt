@@ -100,7 +100,6 @@ object DialogManager {
             statusBarColor = Color.TRANSPARENT
         }
 
-        // Затемняем фон
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 

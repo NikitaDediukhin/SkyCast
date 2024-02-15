@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,8 +58,6 @@ class WeatherFragment: Fragment() {
 
     private lateinit var shimmerLayout: ShimmerFrameLayout
 
-    private var locationRequested = false
-
     private val weatherViewModel: WeatherViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -95,10 +91,7 @@ class WeatherFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!locationRequested){
-            checkLocation()
-            locationRequested = true
-        }
+        checkLocation()
     }
 
     private fun showWeatherData(weatherModel: WeatherModel?) {
@@ -262,14 +255,17 @@ class WeatherFragment: Fragment() {
             btnCity.startAnimation(animation)
             DialogManager.searchByCityNameDialog(view.context, object : DialogManager.Listener{
                 override fun onClick(name: String?) {
+                    if (name.isNullOrEmpty()) {
+                        return
+                    } else {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            try {
+                                weatherViewModel.updateCityName(name)
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            } finally {
 
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        try {
-                            name?.let {cityName -> weatherViewModel.updateCityName(cityName)}
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        } finally {
-
+                            }
                         }
                     }
                 }
