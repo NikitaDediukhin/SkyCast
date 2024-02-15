@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="layoutBackgroundGradientColorPrimary" format="color" />
+    <attr name="layoutBackgroundGradientColorSecondary" format="color" />
+    <attr name="widgetBackgroundGradientColorPrimary" format="color" />
+    <attr name="widgetBackgroundGradientColorSecondary" format="color" />
+    <attr name="dialogBackgroundColor" format="color" />
+    <attr name="textColor" format="color" />
+</resources>
