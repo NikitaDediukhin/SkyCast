@@ -1,7 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
     <style name="Base.Theme.SkyCast" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+        <item name="android:statusBarColor">@color/dark_background_color_darkBlue</item>
+
+        <item name="widgetBackgroundGradientColorPrimary">@color/dark_background_widget_color_lightBlue</item>
+        <item name="widgetBackgroundGradientColorSecondary">@color/dark_background_widget_color_skyBlue</item>
+        <item name="dialogBackgroundColor">@color/dark_background_dialog_color_darkBlue</item>
+
+        <item name="textColor">@color/dark_text_color</item>
+
+        <item name="layoutBackgroundGradientColorPrimary">@color/dark_background_color_darkBlue</item>
+        <item name="layoutBackgroundGradientColorSecondary">@color/dark_background_color_blue</item>
+
     </style>
 </resources>
