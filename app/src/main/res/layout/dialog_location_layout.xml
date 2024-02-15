@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
             android:orientation="vertical"
-            android:background="@color/background_color_alphaBlue">
+            android:background="?attr/dialogBackgroundColor">
 
             <TextView
                 android:layout_width="match_parent"
@@ -26,7 +26,7 @@
                 android:gravity="center"
                 android:textSize="32sp"
                 android:fontFamily="@font/inter_font"
-                android:textColor="@color/text_color"
+                android:textColor="?attr/textColor"
                 android:text="@string/title_location_dialog"/>
             <TextView
                 android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 android:gravity="center"
                 android:textSize="16sp"
                 android:fontFamily="@font/inter_font"
-                android:textColor="@color/text_color"
+                android:textColor="?attr/textColor"
                 android:text="@string/bodytext_location_dialog"/>
 
             <LinearLayout
@@ -52,7 +52,7 @@
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/dialog_button_background"
                     android:layout_weight="1"
-                    android:textColor="@color/text_color"
+                    android:textColor="?attr/textColor"
                     android:fontFamily="@font/inter_font"
                     android:textSize="16sp"
                     android:text="@string/btn_cancel"/>
@@ -64,7 +64,7 @@
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/dialog_button_background"
                     android:layout_weight="1"
-                    android:textColor="@color/text_color"
+                    android:textColor="?attr/textColor"
                     android:fontFamily="@font/inter_font"
                     android:textSize="16sp"
                     android:text="@string/btn_location_enable"/>

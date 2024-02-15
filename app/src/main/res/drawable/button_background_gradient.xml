@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:type="linear"
-        android:startColor="#2C82B5"
-        android:endColor="#015C91"
+        android:startColor="?attr/widgetBackgroundGradientColorPrimary"
+        android:endColor="?attr/widgetBackgroundGradientColorSecondary"
         android:angle="270"/>
     <corners android:radius="20dp" />
 </shape>
