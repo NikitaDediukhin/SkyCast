@@ -1,11 +1,14 @@
 package com.example.skycast.presentation.fragment
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.mapper.WeatherRepositoryMapper
 import com.example.data.mapper.WeatherRepositoryMapperImpl
+import com.example.data.repository.WeatherCacheImpl
 import com.example.data.repository.WeatherRepositoryImpl
 import com.example.domain.models.WeatherModel
 import com.example.domain.repository.WeatherRepository
@@ -14,8 +17,7 @@ import com.example.domain.usecase.RefreshWeatherDataUseCase
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
-    private val weatherRepositoryMapper: WeatherRepositoryMapper = WeatherRepositoryMapperImpl(),
-    private val weatherRepository: WeatherRepository = WeatherRepositoryImpl(weatherRepositoryMapper = weatherRepositoryMapper),
+    private val weatherRepository: WeatherRepository,
     private val getWeatherDataUseCase: GetWeatherDataUseCase = GetWeatherDataUseCase(weatherRepository = weatherRepository),
     private val refreshWeatherDataUseCase: RefreshWeatherDataUseCase = RefreshWeatherDataUseCase(weatherRepository = weatherRepository)
 ): ViewModel() {
