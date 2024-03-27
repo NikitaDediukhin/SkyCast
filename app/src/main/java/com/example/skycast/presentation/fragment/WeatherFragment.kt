@@ -55,6 +55,7 @@ class WeatherFragment: Fragment() {
 
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var fLocationClient: FusedLocationProviderClient
+    private var weatherFetched: Boolean = false
 
     private lateinit var shimmerLayout: ShimmerFrameLayout
 
@@ -91,7 +92,10 @@ class WeatherFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        checkLocation()
+        if(!weatherFetched){
+            checkLocation()
+            weatherFetched = true
+        }
     }
 
     private fun showWeatherData(weatherModel: WeatherModel?) {
