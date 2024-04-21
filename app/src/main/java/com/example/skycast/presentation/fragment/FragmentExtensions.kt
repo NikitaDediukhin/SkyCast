@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +32,22 @@ fun Fragment.isPermissionGranted(permission: String): Boolean {
 fun Fragment.isLocationEnabled(): Boolean {
     val lm = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     return lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+}
+
+fun Fragment.isInternetEnabled(): Boolean {
+    val connectivityManager = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    val network = connectivityManager.activeNetwork ?: return false
+
+    val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+    return when {
+        activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+
+        activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+
+        else -> false
+    }
 }
 
 object DialogManager {

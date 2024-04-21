@@ -6,9 +6,9 @@ import com.example.domain.repository.WeatherRepository
 class GetWeatherDataUseCase(
     private val weatherRepository: WeatherRepository
 ) {
-    suspend fun execute(params: String, callback: (WeatherModel?) -> Unit) {
+    suspend fun execute(params: String, permits: Boolean, callback: (WeatherModel?) -> Unit) {
         try {
-            val weatherModel = weatherRepository.getWeatherData(params)
+            val weatherModel = weatherRepository.getWeatherData(params, permits)
             callback(weatherModel)
         } catch (e: Exception) {
             callback(null)

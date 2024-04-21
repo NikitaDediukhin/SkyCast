@@ -1,7 +1,6 @@
 package com.example.skycast.presentation.fragment
 
 import android.Manifest
-import android.app.Application
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -19,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,10 +26,7 @@ import com.bumptech.glide.Glide
 import com.example.data.mapper.WeatherRepositoryMapper
 import com.example.data.mapper.WeatherRepositoryMapperImpl
 import com.example.data.repository.WeatherCacheImpl
-import com.example.data.repository.WeatherRepositoryImpl
 import com.example.domain.models.WeatherModel
-import com.example.domain.repository.WeatherCache
-import com.example.domain.repository.WeatherRepository
 import com.example.skycast.R
 import com.example.skycast.presentation.adapters.DailyAdapter
 import com.example.skycast.presentation.adapters.HourlyAdapter
@@ -100,6 +95,7 @@ class WeatherFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
+        updatePermits()
         if(!weatherFetched){
             checkLocation()
             weatherFetched = true
@@ -191,7 +187,7 @@ class WeatherFragment: Fragment() {
             .addOnCompleteListener {
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
-                        weatherViewModel.updateCityName("${it.result.latitude},${it.result.longitude}")
+                        weatherViewModel.updateCityNameAndPermits("${it.result.latitude},${it.result.longitude}", checkInternetAndLocation())
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -223,20 +219,31 @@ class WeatherFragment: Fragment() {
         }
     }
 
+    private fun updatePermits() {
+        val locationEnabled = isLocationEnabled()
+        val internetEnabled = isInternetEnabled()
+
+        val permits = locationEnabled && internetEnabled
+
+        weatherViewModel.updatePermits(permits)
+    }
+
+    private fun checkInternetAndLocation(): Boolean {
+        val locationEnabled = isLocationEnabled()
+        val internetEnabled = isInternetEnabled()
+
+        return locationEnabled && internetEnabled
+
+    }
+
     private fun init(view: View) {
 
         try {
-
-            val weatherCache: WeatherCacheImpl = WeatherCacheImpl(requireActivity().application)
+            val weatherCache = WeatherCacheImpl(requireActivity().application)
             val weatherRepositoryMapper: WeatherRepositoryMapper = WeatherRepositoryMapperImpl()
-            val weatherRepository: WeatherRepository = WeatherRepositoryImpl(
-                weatherRepositoryMapper = weatherRepositoryMapper,
-                weatherCacheImpl = weatherCache
-            )
 
-            weatherViewModel = WeatherViewModel(weatherRepository)
-        }
-        catch (e: Exception){
+            weatherViewModel = WeatherViewModel(weatherRepositoryMapper, weatherCache)
+        } catch (e: Exception){
             Log.e("sheat", e.toString())
         }
 
@@ -282,6 +289,7 @@ class WeatherFragment: Fragment() {
         }
         btnCity.setOnClickListener {
             btnCity.startAnimation(animation)
+            updatePermits()
             DialogManager.searchByCityNameDialog(view.context, object : DialogManager.Listener{
                 override fun onClick(name: String?) {
                     if (name.isNullOrEmpty()) {
@@ -289,7 +297,7 @@ class WeatherFragment: Fragment() {
                     } else {
                         viewLifecycleOwner.lifecycleScope.launch {
                             try {
-                                weatherViewModel.updateCityName(name)
+                                weatherViewModel.updateCityNameAndPermits(name, checkInternetAndLocation())
                             } catch (e: IOException) {
                                 e.printStackTrace()
                             } finally {
