@@ -130,6 +130,9 @@ class WeatherFragment: Fragment() {
             hourAdapter.setHourlyData(weatherModel?.dailyWeather?.get(0)?.hourlyWeather!!)
             dayAdapter.setDailyData(weatherModel.dailyWeather)
 
+            rvHourWeather.smoothScrollToPosition(0)
+            rvDayWeather.smoothScrollToPosition(0)
+
         }
 
     }
@@ -163,18 +166,6 @@ class WeatherFragment: Fragment() {
 
     }
 
-    private fun checkPermission() {
-    pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if (!isGranted) {
-            Toast.makeText(context, "Разрешение не получено", Toast.LENGTH_LONG).show()
-        }
-    }
-        val permission = Manifest.permission.ACCESS_FINE_LOCATION
-        if (!isPermissionGranted(permission)) {
-            pLauncher.launch(permission)
-        }
-    }
-
     private fun getLocation() {
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
@@ -187,7 +178,6 @@ class WeatherFragment: Fragment() {
         ) {
             return
         }
-
         fLocationClient
             .getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, ct.token)
             .addOnCompleteListener {
@@ -201,6 +191,17 @@ class WeatherFragment: Fragment() {
         }
     }
 
+    private fun checkPermission() {
+        pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                Toast.makeText(context, "Разрешение не получено", Toast.LENGTH_LONG).show()
+            }
+        }
+        val permission = Manifest.permission.ACCESS_FINE_LOCATION
+        if (!isPermissionGranted(permission)) {
+            pLauncher.launch(permission)
+        }
+    }
 
     private fun checkLocation() {
         if(isLocationEnabled()) {

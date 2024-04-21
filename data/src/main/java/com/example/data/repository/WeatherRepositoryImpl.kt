@@ -2,7 +2,7 @@ package com.example.data.repository
 
 import android.util.Log
 import com.example.data.BuildConfig
-import com.example.data.mapper.WeatherRepositoryMapper
+import com.example.data.response.mapper.WeatherRepositoryMapper
 import com.example.data.response.WeatherResponse
 import com.example.data.service.WeatherApiService
 import com.example.domain.models.WeatherModel

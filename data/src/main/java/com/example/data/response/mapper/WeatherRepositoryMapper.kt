@@ -1,4 +1,4 @@
-package com.example.data.mapper
+package com.example.data.response.mapper
 
 import com.example.data.response.WeatherResponse
 import com.example.domain.models.WeatherModel

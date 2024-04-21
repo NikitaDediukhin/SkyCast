@@ -4,20 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.mapper.WeatherRepositoryMapper
-import com.example.data.mapper.WeatherRepositoryMapperImpl
+import com.example.data.response.mapper.WeatherRepositoryMapper
+import com.example.data.response.mapper.WeatherRepositoryMapperImpl
 import com.example.data.repository.WeatherRepositoryImpl
 import com.example.domain.models.WeatherModel
 import com.example.domain.repository.WeatherRepository
 import com.example.domain.usecase.GetWeatherDataUseCase
-import com.example.domain.usecase.RefreshWeatherDataUseCase
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
     private val weatherRepositoryMapper: WeatherRepositoryMapper = WeatherRepositoryMapperImpl(),
     private val weatherRepository: WeatherRepository = WeatherRepositoryImpl(weatherRepositoryMapper = weatherRepositoryMapper),
     private val getWeatherDataUseCase: GetWeatherDataUseCase = GetWeatherDataUseCase(weatherRepository = weatherRepository),
-    private val refreshWeatherDataUseCase: RefreshWeatherDataUseCase = RefreshWeatherDataUseCase(weatherRepository = weatherRepository)
+    /* private val refreshWeatherDataUseCase: RefreshWeatherDataUseCase = RefreshWeatherDataUseCase(weatherRepository = weatherRepository)*/
 ): ViewModel() {
 
     private val weatherDataMutable = MutableLiveData<WeatherModel>()
@@ -51,19 +50,19 @@ class WeatherViewModel(
         selectedWeatherDayMutable.value = selectedDay
     }
 
-    fun refreshWeatherData() {
-        val city = cityNameMutable.value.toString()
-
-        viewModelScope.launch {
-            try {
-                refreshWeatherDataUseCase.execute(city) {
-                    weatherModel -> weatherDataMutable.value = weatherModel
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
+//    fun refreshWeatherData() {
+//        val city = cityNameMutable.value.toString()
+//
+//        viewModelScope.launch {
+//            try {
+//                refreshWeatherDataUseCase.execute(city) {
+//                    weatherModel -> weatherDataMutable.value = weatherModel
+//                }
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
 
 
 }
