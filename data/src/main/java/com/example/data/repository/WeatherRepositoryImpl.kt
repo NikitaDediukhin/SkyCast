@@ -15,7 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class WeatherRepositoryImpl(
     private var weatherApiService: WeatherApiService = initApi(),
-    private val weatherRepositoryMapper: WeatherRepositoryMapper
+    private val weatherRepositoryMapper: WeatherRepositoryMapper,
+    private val weatherCacheImpl: WeatherCacheImpl,
 ): WeatherRepository {
 
     companion object {
@@ -31,8 +32,13 @@ class WeatherRepositoryImpl(
     }
 
     override suspend fun getWeatherData(cityName: String): WeatherModel? {
-        val weatherModel: WeatherModel?
+        var weatherModel: WeatherModel?
         val weatherResponse: WeatherResponse?
+
+        weatherModel = weatherCacheImpl.getWeatherDataFromCache()
+        if (weatherModel != null){
+            return weatherModel
+        }
 
         try {
             val apiKey = BuildConfig.WEATHER_API_KEY
@@ -54,6 +60,7 @@ class WeatherRepositoryImpl(
                     weatherResponse = response.body()
                     if (weatherResponse?.forecast?.forecastday != null && weatherResponse.forecast.forecastday.isNotEmpty()) {
                         weatherModel = weatherRepositoryMapper.toWeatherModel(weatherResponse)
+                        weatherCacheImpl.saveWeatherDataInCache(weatherModel)
                         return weatherModel
                     } else {
                         Log.e("ErrorRepository", "Empty response or missing forecast data, response = ${response.body()}")
