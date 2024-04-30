@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.mapper.WeatherRepositoryMapper
-import com.example.data.repository.WeatherCacheImpl
+import com.example.data.repository.WeatherCache
 import com.example.data.repository.WeatherRepositoryImpl
 import com.example.domain.models.WeatherModel
 import com.example.domain.repository.WeatherRepository
@@ -14,9 +14,9 @@ import kotlinx.coroutines.launch
 
 class WeatherViewModel(
     private val weatherRepositoryMapper: WeatherRepositoryMapper,
-    private val weatherCacheImpl: WeatherCacheImpl,
+    private val weatherCache: WeatherCache,
     private val weatherRepository: WeatherRepository = WeatherRepositoryImpl(weatherRepositoryMapper = weatherRepositoryMapper,
-                                                                             weatherCacheImpl = weatherCacheImpl),
+                                                                             weatherCacheImpl = weatherCache),
     private val getWeatherDataUseCase: GetWeatherDataUseCase = GetWeatherDataUseCase(weatherRepository = weatherRepository),
     /*private val refreshWeatherDataUseCase: RefreshWeatherDataUseCase = RefreshWeatherDataUseCase(weatherRepository = weatherRepository)*/
 ): ViewModel() {

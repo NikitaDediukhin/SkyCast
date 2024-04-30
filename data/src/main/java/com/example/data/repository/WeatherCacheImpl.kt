@@ -4,8 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.domain.models.WeatherModel
-import com.example.domain.repository.WeatherCache
 import com.google.gson.Gson
+
+interface WeatherCache {
+    fun saveWeatherDataInCache(weatherModel: WeatherModel)
+    fun getWeatherDataFromCache(): WeatherModel?
+}
 
 class WeatherCacheImpl(application: Application): WeatherCache {
 

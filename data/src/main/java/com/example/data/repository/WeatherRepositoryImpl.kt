@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class WeatherRepositoryImpl(
     private var weatherApiService: WeatherApiService = initApi(),
     private val weatherRepositoryMapper: WeatherRepositoryMapper,
-    private val weatherCacheImpl: WeatherCacheImpl,
+    private val weatherCacheImpl: WeatherCache,
 ): WeatherRepository {
 
     companion object {

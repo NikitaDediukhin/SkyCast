@@ -1,6 +1,7 @@
 package com.example.skycast.presentation.fragment
 
 import android.Manifest
+import android.app.Application
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -23,13 +24,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
-import com.example.data.mapper.WeatherRepositoryMapper
-import com.example.data.mapper.WeatherRepositoryMapperImpl
-import com.example.data.repository.WeatherCacheImpl
 import com.example.domain.models.WeatherModel
 import com.example.skycast.R
 import com.example.skycast.presentation.adapters.DailyAdapter
 import com.example.skycast.presentation.adapters.HourlyAdapter
+import com.example.skycast.presentation.di.AppContainer
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -239,10 +238,13 @@ class WeatherFragment: Fragment() {
     private fun init(view: View) {
 
         try {
-            val weatherCache = WeatherCacheImpl(requireActivity().application)
-            val weatherRepositoryMapper: WeatherRepositoryMapper = WeatherRepositoryMapperImpl()
 
-            weatherViewModel = WeatherViewModel(weatherRepositoryMapper, weatherCache)
+            val application: Application = requireActivity().application
+            val appContainer = AppContainer(application)
+
+            val weatherRepositoryMapper = appContainer.provideWeatherMapper()
+
+            weatherViewModel = WeatherViewModel(weatherRepositoryMapper, appContainer.provideWeatherCache(), appContainer.provideWeatherRepository())
         } catch (e: Exception){
             Log.e("sheat", e.toString())
         }
