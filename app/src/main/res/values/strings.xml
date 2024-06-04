@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Погодка</string>
+    <string name="app_name">Skycast</string>
 
     <string name="current_weather_city">%1$s</string>
     <string name="current_weather_temp">%1$d°</string>
