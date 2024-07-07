@@ -25,10 +25,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.domain.models.WeatherModel
+import com.example.domain.usecase.GetWeatherDataUseCase
 import com.example.skycast.R
+import com.example.skycast.presentation.activity.MainActivity
 import com.example.skycast.presentation.adapters.DailyAdapter
 import com.example.skycast.presentation.adapters.HourlyAdapter
-import com.example.skycast.presentation.di.AppContainer
+import di.AppContainer
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -79,6 +81,8 @@ class WeatherFragment: Fragment() {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+
+        weatherViewModel = (activity as MainActivity).vm
 
         checkPermission()
         init(view)
@@ -236,19 +240,6 @@ class WeatherFragment: Fragment() {
     }
 
     private fun init(view: View) {
-
-        try {
-
-            val application: Application = requireActivity().application
-            val appContainer = AppContainer(application)
-
-            val weatherRepositoryMapper = appContainer.provideWeatherMapper()
-
-            weatherViewModel = WeatherViewModel(weatherRepositoryMapper, appContainer.provideWeatherCache(), appContainer.provideWeatherRepository())
-        } catch (e: Exception){
-            Log.e("sheat", e.toString())
-        }
-
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         tvCity = view.findViewById(R.id.tv_city)
         tvTemp = view.findViewById(R.id.tv_temp)

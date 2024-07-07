@@ -5,15 +5,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.domain.models.WeatherModel
 import com.google.gson.Gson
+import javax.inject.Inject
 
 interface WeatherCache {
     fun saveWeatherDataInCache(weatherModel: WeatherModel)
     fun getWeatherDataFromCache(): WeatherModel?
 }
 
-class WeatherCacheImpl(application: Application): WeatherCache {
+class WeatherCacheImpl @Inject constructor(val context: Context): WeatherCache {
 
-    private val sharedPreferences: SharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     companion object {
         private const val PREF_NAME = "WeatherPrefs"

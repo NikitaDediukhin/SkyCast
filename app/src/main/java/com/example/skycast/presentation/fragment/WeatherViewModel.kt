@@ -4,21 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.mapper.WeatherRepositoryMapper
-import com.example.data.repository.WeatherCache
-import com.example.data.repository.WeatherRepositoryImpl
 import com.example.domain.models.WeatherModel
-import com.example.domain.repository.WeatherRepository
 import com.example.domain.usecase.GetWeatherDataUseCase
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
-    private val weatherRepositoryMapper: WeatherRepositoryMapper,
-    private val weatherCache: WeatherCache,
-    private val weatherRepository: WeatherRepository = WeatherRepositoryImpl(weatherRepositoryMapper = weatherRepositoryMapper,
-                                                                             weatherCacheImpl = weatherCache),
-    private val getWeatherDataUseCase: GetWeatherDataUseCase = GetWeatherDataUseCase(weatherRepository = weatherRepository),
-    /*private val refreshWeatherDataUseCase: RefreshWeatherDataUseCase = RefreshWeatherDataUseCase(weatherRepository = weatherRepository)*/
+    private val getWeatherDataUseCase: GetWeatherDataUseCase,
 ): ViewModel() {
 
     private val weatherDataMutable = MutableLiveData<WeatherModel>()
@@ -59,20 +50,4 @@ class WeatherViewModel(
     fun updateSelectedDay(selectedDay: WeatherModel.DailyWeather) {
         selectedWeatherDayMutable.value = selectedDay
     }
-
-//    fun refreshWeatherData() {
-//        val city = cityNameMutable.value.toString()
-//
-//        viewModelScope.launch {
-//            try {
-//                refreshWeatherDataUseCase.execute(city) {
-//                    weatherModel -> weatherDataMutable.value = weatherModel
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-
-
 }
