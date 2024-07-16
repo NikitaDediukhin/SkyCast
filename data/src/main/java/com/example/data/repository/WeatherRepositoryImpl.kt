@@ -13,6 +13,14 @@ import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Implementation of WeatherRepository that interacts with Weather API service
+ * and manages weather data caching.
+ *
+ * @property weatherApiService The Retrofit service interface for making API requests.
+ * @property weatherRepositoryMapper Mapper to convert API responses to domain models.
+ * @property weatherCacheImpl Cache implementation to store and retrieve weather data.
+ */
 class WeatherRepositoryImpl(
     private var weatherApiService: WeatherApiService = initApi(),
     private val weatherRepositoryMapper: WeatherRepositoryMapper,
@@ -20,6 +28,11 @@ class WeatherRepositoryImpl(
 ): WeatherRepository {
 
     companion object {
+        /**
+         * Initialize the WeatherApiService with Retrofit.
+         *
+         * @return Initialized WeatherApiService instance.
+         */
         fun initApi(): WeatherApiService {
             val gson = GsonBuilder().create()
             val retrofit = Retrofit.Builder()
@@ -31,6 +44,13 @@ class WeatherRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves weather data for a specific city either from API or cache.
+     *
+     * @param cityName The name of the city for which weather data is requested.
+     * @param permits Boolean flag indicating if API requests are permitted.
+     * @return WeatherModel containing the weather data for the city, or null if data retrieval fails.
+     */
     override suspend fun getWeatherData(cityName: String, permits: Boolean): WeatherModel? {
         val weatherModel: WeatherModel?
         val weatherResponse: WeatherResponse?
@@ -40,6 +60,7 @@ class WeatherRepositoryImpl(
                 val apiKey = BuildConfig.WEATHER_API_KEY
                 val response = withContext(Dispatchers.IO) {
                     try {
+                        // Make API request to get weather info for the specified city
                         weatherApiService.getWeatherInfo(apiKey, cityName)
                     }
                     catch (e: Exception) {
@@ -48,13 +69,13 @@ class WeatherRepositoryImpl(
                     }
                 }
 
-                Log.w("query", response?.raw()?.request().toString())
-
                 if (response != null) {
                     if (response.isSuccessful) {
                         weatherResponse = response.body()
                         if (weatherResponse?.forecast?.forecastday != null && weatherResponse.forecast.forecastday.isNotEmpty()) {
+                            // Convert API response to domain model
                             weatherModel = weatherRepositoryMapper.toWeatherModel(weatherResponse)
+                            // Save weather data to cache
                             weatherCacheImpl.saveWeatherDataInCache(weatherModel)
                             return weatherModel
                         } else {
@@ -68,12 +89,12 @@ class WeatherRepositoryImpl(
                 Log.e("ErrorRepository", e.toString())
             }
         } else {
+            // Retrieve weather data from cache if API requests are not permitted
             weatherModel = weatherCacheImpl.getWeatherDataFromCache()
             if (weatherModel != null){
                 return weatherModel
             }
         }
-
 
         return null
     }

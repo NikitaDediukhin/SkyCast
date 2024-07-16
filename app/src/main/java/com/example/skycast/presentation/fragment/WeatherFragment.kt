@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -43,8 +44,8 @@ class WeatherFragment: Fragment() {
     private lateinit var binding: WeatherFragmentBinding
     private lateinit var pLauncher: ActivityResultLauncher<String>
     private lateinit var fLocationClient: FusedLocationProviderClient
-    private lateinit var weatherViewModel: WeatherViewModel
     private var weatherFetched: Boolean = false
+    private lateinit var weatherViewModel: WeatherViewModel
 
     private val hourAdapter: HourlyAdapter by lazy { HourlyAdapter() }
     private val dayAdapter: DailyAdapter by lazy { DailyAdapter() }
@@ -58,8 +59,9 @@ class WeatherFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = WeatherFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
         binding.shimmerLayout.startShimmer()
         return view
     }
@@ -219,7 +221,7 @@ class WeatherFragment: Fragment() {
                         e.printStackTrace()
                     }
                 }
-        }
+            }
     }
 
     /**
@@ -227,7 +229,9 @@ class WeatherFragment: Fragment() {
      */
     private fun checkPermission() {
         pLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            // Optional: handle permission result
+            if (!isGranted) {
+                Toast.makeText(context, "Permission is not granted", Toast.LENGTH_LONG).show()
+            }
         }
         val permission = Manifest.permission.ACCESS_FINE_LOCATION
         // Request permission if not already granted
@@ -340,6 +344,5 @@ class WeatherFragment: Fragment() {
 
             })
         }
-
     }
 }

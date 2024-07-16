@@ -1,5 +1,6 @@
 package di
 
+import android.app.Application
 import android.content.Context
 import com.example.domain.usecase.GetWeatherDataUseCase
 import com.example.skycast.presentation.fragment.WeatherViewModelFactory
@@ -8,12 +9,12 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class AppModule(private val context: Context) {
+class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
     fun providesContext(): Context {
-        return context
+        return application.applicationContext
     }
 
     @Provides

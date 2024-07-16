@@ -4,8 +4,6 @@ import android.app.Application
 import di.AppComponent
 import di.AppModule
 import di.DaggerAppComponent
-import di.DataModule
-import di.DomainModule
 
 class MyApp: Application() {
 
@@ -16,8 +14,6 @@ class MyApp: Application() {
 
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
-            .dataModule(DataModule())
-            .domainModule(DomainModule())
             .build()
     }
 }

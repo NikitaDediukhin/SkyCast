@@ -9,7 +9,7 @@ import com.example.domain.usecase.GetWeatherDataUseCase
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
-    private val getWeatherDataUseCase: GetWeatherDataUseCase,
+    private val getWeatherDataUseCase: GetWeatherDataUseCase
 ): ViewModel() {
 
     private val weatherDataMutable = MutableLiveData<WeatherModel>()
