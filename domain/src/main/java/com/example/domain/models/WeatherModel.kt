@@ -1,5 +1,10 @@
 package com.example.domain.models
 
+/**
+ * Data class representing the overall weather information including current and daily forecasts.
+ * @property currentWeather Current weather details including city, time, temperatures, condition, and icon.
+ * @property dailyWeather List of daily weather forecasts including date, temperatures, condition, and hourly details.
+ */
 data class WeatherModel(
     val currentWeather: CurrentWeather,
     val dailyWeather: List<DailyWeather>,
