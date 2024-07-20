@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import application.MyApp
 import com.example.skycast.R
 import com.example.skycast.presentation.fragment.WeatherFragment
-import com.example.skycast.presentation.fragment.WeatherViewModel
-import com.example.skycast.presentation.fragment.WeatherViewModelFactory
+import com.example.skycast.presentation.viewmodel.WeatherViewModel
+import com.example.skycast.presentation.viewmodel.WeatherViewModelFactory
 import javax.inject.Inject
 
 /**

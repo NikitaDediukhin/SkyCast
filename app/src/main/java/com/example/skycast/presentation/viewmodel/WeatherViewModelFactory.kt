@@ -1,4 +1,4 @@
-package com.example.skycast.presentation.fragment
+package com.example.skycast.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

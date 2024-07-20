@@ -1,4 +1,4 @@
-package com.example.skycast.presentation.fragment
+package com.example.skycast.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,7 +29,7 @@ class WeatherViewModel(
     private val cityNameMutable = MutableLiveData<String>()
 
     // LiveData to hold the status of permissions and location
-    private val isPermissionAndLocationGranted = MutableLiveData<Boolean>()
+    val isPermissionAndLocationGranted = MutableLiveData<Boolean>()
 
     /**
      * Function to fetch weather data based on the current city and permission status.

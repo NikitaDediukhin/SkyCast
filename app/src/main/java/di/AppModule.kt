@@ -3,7 +3,7 @@ package di
 import android.app.Application
 import android.content.Context
 import com.example.domain.usecase.GetWeatherDataUseCase
-import com.example.skycast.presentation.fragment.WeatherViewModelFactory
+import com.example.skycast.presentation.viewmodel.WeatherViewModelFactory
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

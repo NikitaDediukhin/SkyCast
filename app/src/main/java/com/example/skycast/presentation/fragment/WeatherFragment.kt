@@ -24,6 +24,7 @@ import com.example.skycast.databinding.WeatherFragmentBinding
 import com.example.skycast.presentation.activity.MainActivity
 import com.example.skycast.presentation.adapters.DailyAdapter
 import com.example.skycast.presentation.adapters.HourlyAdapter
+import com.example.skycast.presentation.viewmodel.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
