@@ -13,3 +13,4 @@
 - Clean Architecture(MVVM).
 - Retrofit 2.
 - Kotlin Coroutines
+- Dagger 2
